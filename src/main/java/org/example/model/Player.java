@@ -1,4 +1,4 @@
-package org.example.dto;
+package org.example.model;
 
 public class Player {
     private Integer id;

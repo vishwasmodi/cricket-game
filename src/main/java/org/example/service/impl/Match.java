@@ -1,8 +1,11 @@
-package org.example;
+package org.example.service.impl;
 
-import org.example.dto.Player;
-import org.example.dto.PlayerStats;
-import org.example.dto.Team;
+import org.example.GameHelper;
+import org.example.dto.MatchRes;
+import org.example.model.Player;
+import org.example.model.PlayerStats;
+import org.example.model.Team;
+import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +13,7 @@ import java.util.HashMap;
 public class Match {
 
     final static Integer numberOfBallsInOver = 6;
-    static Integer numberOfOvers = CricketGame.numberOfOvers;
+    static Integer numberOfOvers = GameServiceImpl.numberOfOvers;
     private GameHelper helper = new GameHelper();
 
     public static ArrayList<Player> sortByBattingSkill(ArrayList<Player> list) {
@@ -27,22 +30,32 @@ public class Match {
         return helper.randomTossGenerator();
     }
 
-    public void startPlaying(Team team1, Team team2) {
+    public MatchRes startPlaying(Team team1, Team team2) {
 
         Integer teamWhoWonToss = toss();
         System.out.println("Team " + teamWhoWonToss + " wins the toss and chooses to Bat");
 
         Integer team1Runs;
         Integer team2Runs;
+        Pair<HashMap, Integer> innings1;
+        Pair<HashMap, Integer> innings2;
 
         if (teamWhoWonToss == 1) {
-            team1Runs = playInnings(team1, team2);
-            team2Runs = playInnings(team2, team1);
+            innings1 = playInnings(team1, team2);
+            innings2 = playInnings(team2, team1);
+            team1Runs = innings1.getSecond();
+            team2Runs = innings2.getSecond();
         } else {
-            team2Runs = playInnings(team2, team1);
-            team1Runs = playInnings(team1, team2);
+            innings1 = playInnings(team2, team1);
+            innings2 = playInnings(team1, team2);
+            team2Runs = innings1.getSecond();
+            team1Runs = innings2.getSecond();
         }
-
+        MatchRes matchRes =
+                MatchRes.builder().teamStats1(innings1.getFirst()).teamStats2(innings2.getFirst())
+                        .team1Score(team1Runs).team2Score(team2Runs)
+                        .winnerTeam(team1Runs > team2Runs ? team1.getName() : team2.getName())
+                        .build();
         System.out.println("Team 1 scored " + team1Runs + " runs.");
         System.out.println("Team 2 scored " + team2Runs + " runs.");
 
@@ -53,9 +66,11 @@ public class Match {
         } else {
             System.out.println("It's a draw");
         }
+
+        return matchRes;
     }
 
-    private Integer playInnings(Team battingTeam, Team ballingTeam) {
+    private Pair<HashMap, Integer> playInnings(Team battingTeam, Team ballingTeam) {
 
         ArrayList<Player> battingPlayers = sortByBattingSkill(battingTeam.getPlayers());
         ArrayList<Player> ballingPlayers = sortByBallingSkill(ballingTeam.getPlayers());
@@ -78,16 +93,14 @@ public class Match {
                     System.out.println(res + " runs!");
                 }
 
-                if (battingPlayer == 10) {
+                if (battingPlayer == 10)
                     break;
-                }
             }
-            if (battingPlayer == 10) {
+            if (battingPlayer == 10)
                 break;
-            }
         }
         System.out.println("Innings over");
         System.out.println("Total runs of team " + battingTeam.getName() + " are " + totalRuns);
-        return totalRuns;
+        return Pair.of(playersStats, totalRuns);
     }
 }

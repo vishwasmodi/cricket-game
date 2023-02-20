@@ -1,6 +1,4 @@
-package org.example.dto;
-
-import org.example.dto.Player;
+package org.example.model;
 
 import java.util.ArrayList;
 public class Team {

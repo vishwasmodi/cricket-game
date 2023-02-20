@@ -1,8 +1,9 @@
-package org.example;
+package org.example.service.impl;
 
 
-import org.example.dto.Player;
-import org.example.dto.Team;
+import org.example.GameHelper;
+import org.example.model.Player;
+import org.example.model.Team;
 
 public class CreateTeam {
 
