@@ -1,0 +1,4 @@
+- Store verdict of each ball (1,2,3,4,6,Wd,Nb,lb,etc) in DB
+- Store the total runs scored by each batsman in DB
+- Store the total runs scored by each bowler in DB
+- Random function

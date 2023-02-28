@@ -1,10 +1,10 @@
 package org.example.repository;
 
-import org.example.dto.MatchResult;
+import org.example.model.Player;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MatchRepository extends MongoRepository<MatchResult, String> {
-    MatchResult findByMatchId(String matchId);
+public interface PlayerRepository extends MongoRepository<Player, String> {
+    Player findByPlayerId(String playerId);
 }
